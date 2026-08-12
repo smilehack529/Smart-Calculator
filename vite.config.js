@@ -4,11 +4,12 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/',
+  base: './',
   build: {
     outDir: 'dist',
+    assetsDir: 'assets',
     sourcemap: false,
-    chunkSizeWarningLimit: 1000,
+    emptyOutDir: true,
   },
   server: {
     port: 3000,

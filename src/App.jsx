@@ -13,8 +13,14 @@ import { evaluateExpression } from './utils/mathEngine';
 import { sound } from './utils/audio';
 
 export default function App() {
-  // Theme & App State
-  const [theme, setTheme] = useState(() => localStorage.getItem('qc_theme') || 'dark');
+  // Theme & App State with Safe LocalStorage Access
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem('qc_theme') || 'dark';
+    } catch {
+      return 'dark';
+    }
+  });
   const [isMuted, setIsMuted] = useState(false);
   const [activeTab, setActiveTab] = useState('calc');
 
@@ -27,7 +33,7 @@ export default function App() {
   const [memoryVal, setMemoryVal] = useState(0);
   const [is2ndActive, setIs2ndActive] = useState(false);
 
-  // History & Drawer
+  // History & Drawer with Safe LocalStorage Parsing
   const [history, setHistory] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('qc_history')) || [];
@@ -42,13 +48,17 @@ export default function App() {
 
   // Theme attribute application
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('qc_theme', theme);
+    try {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('qc_theme', theme);
+    } catch {}
   }, [theme]);
 
   // Persist history
   useEffect(() => {
-    localStorage.setItem('qc_history', JSON.stringify(history));
+    try {
+      localStorage.setItem('qc_history', JSON.stringify(history));
+    } catch {}
   }, [history]);
 
   // Real-time Live Expression Evaluation
@@ -91,11 +101,13 @@ export default function App() {
 
     // Confetti burst for fun calculations
     if (Math.random() < 0.25 || expression.length > 8) {
-      confetti({
-        particleCount: 30,
-        spread: 60,
-        origin: { y: 0.8 },
-      });
+      try {
+        confetti({
+          particleCount: 30,
+          spread: 60,
+          origin: { y: 0.8 },
+        });
+      } catch {}
     }
 
     const newHistoryItem = {
